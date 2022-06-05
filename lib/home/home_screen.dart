@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          title: const Text('Tabs Demo'),
+          title: const Text('Weather & Feed News'),
         ),
         body: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {

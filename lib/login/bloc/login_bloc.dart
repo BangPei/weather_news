@@ -16,7 +16,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final NavigationService _nav = locator<NavigationService>();
   LoginBloc() : super(LoginState()) {
     on<LoginEvent>(
-      (event, emit) {
+      (event, emit) async {
         if (event is OnChangeUsername) {
           emit(_onUsernameChange(event, state));
         }
@@ -24,10 +24,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(_onPasswordChange(event, state));
         }
         if (event is LoginSubmitted) {
-          emit(_onLoginSubmitted(event, state));
+          LoginState _loginState = await _onLoginSubmitted(event, state);
+          emit(_loginState);
         }
         if (event is LogoutSubmitted) {
-          emit(_onLogoutSubmite(event, state));
+          LoginState _logoutState = await _onLogoutSubmite(event, state);
+          emit(_logoutState);
         }
       },
     );
@@ -43,7 +45,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     return state.copyWith(password: password);
   }
 
-  _onLoginSubmitted(LoginSubmitted event, LoginState state) async {
+  Future<LoginState> _onLoginSubmitted(
+      LoginSubmitted event, LoginState state) async {
     BuildContext _context = _nav.navigatorKey.currentContext!;
     bool isUsername = await Session.checkValue("username");
     bool isPassword = await Session.checkValue("password");
@@ -58,7 +61,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             ),
             (route) => false);
       } else {
-        print("Login Failed");
+        Flushbar(
+          title: "Login Failed",
+          message: "Username or Password is incorrect, Please try again !",
+          duration: Duration(seconds: 3),
+          flushbarPosition: FlushbarPosition.TOP,
+          backgroundColor: Colors.redAccent,
+        )..show(_context);
       }
     } else {
       Flushbar(
@@ -69,9 +78,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         backgroundColor: Colors.redAccent,
       )..show(_context);
     }
+    return LoginState();
   }
 
-  _onLogoutSubmite(LogoutSubmitted event, LoginState state) async {
+  Future<LoginState> _onLogoutSubmite(
+      LogoutSubmitted event, LoginState state) async {
     BuildContext _context = _nav.navigatorKey.currentContext!;
     await Session.clear();
     AppRouter.router.navigateTo(
@@ -80,5 +91,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       replace: true,
       clearStack: true,
     );
+    return LoginState();
   }
 }

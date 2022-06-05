@@ -14,22 +14,4 @@ abstract class RestClient {
       @Queries() Map<String, dynamic> queries);
   @GET("top-headlines")
   Future<News> getHeadlineNews(@Queries() Map<String, dynamic> queries);
-
-  // @GET("sales")
-  // Future<List<Salesman>> findAllSalesman();
-
-  // @GET("sales/{id}")
-  // Future<Salesman> salesmanFindById(@Path() String id);
-
-  // @GET("customer")
-  // Future<List<Customer>> findAllCustomer();
-
-  // @GET("customer/{id}")
-  // Future<Customer> customerFindById(@Path() String id);
-
-  // @PUT("customer/{id}")
-  // Future customerEdit(@Path() String id, @Body() Customer cst);
-
-  // @POST("customer")
-  // Future<Customer> postCustomer(@Body() Customer customer);
 }
